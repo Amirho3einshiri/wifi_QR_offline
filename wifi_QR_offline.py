@@ -1,13 +1,12 @@
-#ساخته شده توسط امیرحسین شیری
-#برنامه تشخیص رمز وای فای با بارکد آن
+# ساخته شده توسط امیرحسین شیری
+# برنامه تشخیص رمز وای فای با بارکد آن
 
-from pyzbar.pyzbar import decode
-from PIL import Image
-import re
+import argparse
 import os
+import re
 
-# مسیر عکس QR
-IMAGE_PATH =r"C:\Users\ElmanKala.ir\Desktop\python-project\image.png"
+from PIL import Image
+from pyzbar.pyzbar import decode
 
 # الگوی وای‌فای
 WIFI_RE = re.compile(
