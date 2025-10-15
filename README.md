@@ -10,4 +10,4 @@
 
 ## 🚀 نصب
 ```bash
-pip install opencv-python pillow pyzbar
+pip install -r requirements.txt
