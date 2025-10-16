@@ -1,22 +1,40 @@
-#ساخته شده توسط امیرحسین شیری
-#برنامه تشخیص رمز وای فای با بارکد آن
+# ساخته شده توسط امیرحسین شیری
+# برنامه تشخیص رمز وای فای با بارکد آن
 
-from pyzbar.pyzbar import decode
-from PIL import Image
-import re
+import argparse
 import os
+import re
 
-# مسیر عکس QR
-IMAGE_PATH =r"C:\Users\ElmanKala.ir\Desktop\python-project\image.png"
+from PIL import Image
+from pyzbar.pyzbar import decode
 
-# الگوی وای‌فای
-WIFI_RE = re.compile(
-    r"WIFI:S:(?P<ssid>[^;]+);P:(?P<pw>[^;]+);",
-    re.IGNORECASE
+
+argparser = argparse.ArgumentParser(
+    "wifi_qr_offline", "برنامه تشخیص رمز وای فای با بارکد آن"
 )
 
-def read_qr_offline(image_path):
+argparser.add_argument("image_path")
+
+
+# الگوی وای‌فای
+WIFI_RE = re.compile(r"WIFI:(\w:.+;)+", re.IGNORECASE)
+
+# الگوی ویژگی های وای‌فای
+WIFI_PROPERTY_RE = re.compile(r"(\w):([^;]*);")
+
+# نام های کامل ویژگی های وای‌فای
+WIFI_PROPERTIES = {
+    "H": "Hidden Network",
+    "P": "Password",
+    "S": "SSID",
+    "T": "Authentication Type",
+}
+
+
+def read_qr_offline():
     """خواندن QR از تصویر و استخراج SSID و Password در صورت وجود."""
+
+    image_path = argparser.parse_args().image_path
 
     # بررسی وجود فایل
     if not os.path.exists(image_path):
@@ -43,15 +61,14 @@ def read_qr_offline(image_path):
         # بررسی فرمت وای‌فای
         m = WIFI_RE.search(qr_text)
         if m:
-            ssid = m.group("ssid")
-            pw = m.group("pw")
             print("\n وای‌فای شناسایی شد:")
-            print(f" SSID: {ssid}")
-            print(f" Password: {pw}")
-            return pw
+            matches = WIFI_PROPERTY_RE.findall(m.group(1))
+            for match in matches:
+                print(f"{WIFI_PROPERTIES.get(match[0]) or match[0]}: {match[1]}")
         else:
-            print("\nℹ این QR مربوط به وای‌فای نیست یا فرمتش متفاوت است.")
+            print("\nاین QR مربوط به وای‌فای نیست یا فرمتش متفاوت است.")
             return None
 
+
 if __name__ == "__main__":
-    read_qr_offline(IMAGE_PATH)
+    read_qr_offline()
