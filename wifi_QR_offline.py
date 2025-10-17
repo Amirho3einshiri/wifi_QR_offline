@@ -9,7 +9,7 @@ from pyzbar.pyzbar import decode
 
 # تنظیم آرگومان خط فرمان برای دریافت مسیر عکس
 argparser = argparse.ArgumentParser("wifi_qr_offline", description="برنامه تشخیص رمز وای فای با بارکد آن")
-argparser.add_argument("image_path")
+argparser.add_argument("image_path", help="مسیر تصویر QR وای‌فای")
 
 # الگوی وای‌فای
 WIFI_RE = re.compile(r"WIFI:S:(?P<ssid>[^;]+);P:(?P<pw>[^;]+);", re.IGNORECASE)
@@ -54,7 +54,7 @@ def read_qr_offline(image_path):
 def save_password_to_file(ssid, pw, filename="wifi_password.txt"):
     """ذخیره SSID و Password در فایل متنی."""
     try:
-        with open(filename, "w", encoding="utf-8") as f:
+        with open(filename, mode="w", encoding="utf-8") as f:
             f.write(f"SSID: {ssid}\nPassword: {pw}\n")
         print(f"\n📁 رمز وای‌فای در فایل '{filename}' ذخیره شد.")
     except Exception as e:
