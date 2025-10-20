@@ -12,8 +12,21 @@ from pyzbar.pyzbar import decode
 argparser = argparse.ArgumentParser("wifi_qr_offline", description="برنامه تشخیص رمز وای فای با بارکد آن")
 argparser.add_argument("image_path", help="مسیر تصویر QR وای‌فای")
 
+
 # الگوی وای‌فای
-WIFI_RE = re.compile(r"WIFI:S:(?P<ssid>[^;]+);P:(?P<pw>[^;]+);", re.IGNORECASE)
+WIFI_RE = re.compile(r"WIFI:(\w:.+;)+", re.IGNORECASE)
+
+# الگوی پارامترهای وای‌فای
+WIFI_PARAMETERS_RE = re.compile(r"(\w):([^;]*);")
+
+# پارامترهای وای‌فای
+WIFI_PARAMETERS = {
+    "H": "Hidden Network",
+    "P": "Password",
+    "S": "SSID",
+    "T": "Authentication Type",
+}
+
 
 def welcome():
     print("👋 خوش آمدی به برنامه تشخیص رمز وای‌فای با بارکد!")
@@ -45,13 +58,16 @@ def read_qr_offline(image_path):
 
         m = WIFI_RE.search(qr_text)
         if m:
-            ssid = m.group("ssid")
-            pw = m.group("pw")
-            print("\n✅ وای‌فای شناسایی شد:")
-            print(f"🔐 SSID: {ssid}")
-            print(f"🔑 Password: {pw}")
-            save_password_to_file(ssid, pw)
-            return pw
+            save_password_to_file_arguments = {}
+            wifi_parameters = WIFI_PARAMETERS_RE.findall(m.group(1))
+            for parameter in wifi_parameters:
+                if parameter[0] == "P":
+                    save_password_to_file_arguments["pw"] = parameter[1]
+                elif parameter[0] == "S":
+                    save_password_to_file_arguments["ssid"] = parameter[1]
+                print(f"{WIFI_PARAMETERS.get(parameter[0]) or parameter[0]}: {parameter[1]}")
+            save_password_to_file(**save_password_to_file_arguments)
+            return save_password_to_file_arguments.get("pw")
         else:
             print("\nℹ این QR مربوط به وای‌فای نیست یا فرمتش متفاوت است.")
             return None
