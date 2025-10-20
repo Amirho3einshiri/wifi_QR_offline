@@ -4,6 +4,7 @@
 import argparse
 import os
 import re
+from datetime import datetime
 from PIL import Image
 from pyzbar.pyzbar import decode
 
@@ -13,6 +14,10 @@ argparser.add_argument("image_path", help="مسیر تصویر QR وای‌فا�
 
 # الگوی وای‌فای
 WIFI_RE = re.compile(r"WIFI:S:(?P<ssid>[^;]+);P:(?P<pw>[^;]+);", re.IGNORECASE)
+
+def welcome():
+    print("👋 خوش آمدی به برنامه تشخیص رمز وای‌فای با بارکد!")
+    print("📷 فقط کافیه تصویر QR رو بدی تا رمز رو برات استخراج کنیم.\n")
 
 def read_qr_offline(image_path):
     """خواندن QR از تصویر و استخراج SSID و Password در صورت وجود."""
@@ -52,14 +57,16 @@ def read_qr_offline(image_path):
             return None
 
 def save_password_to_file(ssid, pw, filename="wifi_password.txt"):
-    """ذخیره SSID و Password در فایل متنی."""
+    """ذخیره SSID و Password در فایل متنی با تاریخ."""
     try:
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(filename, mode="w", encoding="utf-8") as f:
-            f.write(f"SSID: {ssid}\nPassword: {pw}\n")
+            f.write(f"زمان ذخیره‌سازی: {now}\nSSID: {ssid}\nPassword: {pw}\n")
         print(f"\n📁 رمز وای‌فای در فایل '{filename}' ذخیره شد.")
     except Exception as e:
         print("❌ خطا در ذخیره‌سازی رمز:", e)
 
 if __name__ == "__main__":
+    welcome()
     args = argparser.parse_args()
     read_qr_offline(args.image_path)
