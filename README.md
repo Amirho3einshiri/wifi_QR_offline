@@ -14,20 +14,15 @@ Install the required dependencies:
 
 ```bash
 pip install pyzbar pillow
+
 Usage
 Edit the IMAGE_PATH variable in wifi_QR_offline.py to point to your QR code image:
-
-python
-Copy code
 IMAGE_PATH = r"C:\path\to\your\qr_code.png"
-Then run the script:
 
-bash
-Copy code
+Then run the script:
 python wifi_QR_offline.py
+
 Example Output
-vbnet
-Copy code
 QR text detected:
 WIFI:S:MyWiFiNetwork;P:MySecurePassword123;
 
@@ -41,6 +36,3 @@ This project is licensed under the MIT License.
 
 Author
 Created by Amirhossein Shiri
-
-markdown
-Copy code
