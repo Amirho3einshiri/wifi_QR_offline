@@ -30,9 +30,3 @@ WiFi detected:
 SSID: MyWiFiNetwork
 Password: MySecurePassword123
 If the QR code is not a WiFi QR or the format is different, the program will notify you.
-
-License
-This project is licensed under the MIT License.
-
-Author
-Created by Amirhossein Shiri
